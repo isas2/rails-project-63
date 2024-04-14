@@ -1,4 +1,4 @@
-name: lint-test
+name: CI
 
 on:
   push:
@@ -12,6 +12,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: make install
-      - run: make lint
-      - run: make test
+
+      - name: Set up Ruby 3.2
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Run Rubocop
+        run: make lint
+
+      - name: Run Tests
+        run: make test
