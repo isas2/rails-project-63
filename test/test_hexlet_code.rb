@@ -3,7 +3,15 @@
 require "test_helper"
 
 class TestHexletCode < Minitest::Test
-  User = Struct.new(:name, :job, keyword_init: true)
+  User = Struct.new(:name, :job, :gender, keyword_init: true)
+
+  def setup
+    @user = User.new name: "rob", job: "hexlet", gender: "m"
+  end
+
+  def load_fixture(filename)
+    File.read(File.dirname(__FILE__) + "/fixtures/#{filename}")
+  end
 
   def test_that_it_has_a_version_number
     refute_nil ::HexletCode::VERSION
@@ -16,35 +24,68 @@ class TestHexletCode < Minitest::Test
 
     tag = HexletCode::Tag.build("img", src: "path/to/image")
 
-    assert_equal "<img src=\"path/to/image\">", tag
+    assert_equal load_fixture("tag_img.html"), tag
 
     tag = HexletCode::Tag.build("input", type: "submit", value: "Save")
 
-    assert_equal "<input type=\"submit\" value=\"Save\">", tag
+    assert_equal load_fixture("tag_input.html"), tag
   end
 
   def test_return_paired_tag
-    tag = HexletCode::Tag.build("label") { "Email" }
-
-    assert_equal "<label>Email</label>", tag
-
     tag = HexletCode::Tag.build("label", for: "email") { "Email" }
 
-    assert_equal "<label for=\"email\">Email</label>", tag
+    assert_equal load_fixture("tag_label.html"), tag
 
     tag = HexletCode::Tag.build("div") { "" }
 
     assert_equal "<div></div>", tag
   end
 
-  def test_return_form
-    user = User.new name: "rob"
-    form = HexletCode.form_for(user) { |_| "" }
+  def test_form_for_without_url
+    result = HexletCode.form_for @user
 
-    assert_equal "<form action=\"#\" method=\"post\"></form>", form
+    assert_equal load_fixture("form_without_action.html"), result
+  end
 
-    form = HexletCode.form_for(user, url: "/users")
+  def test_form_for_with_url
+    result = HexletCode.form_for @user, url: "/users"
 
-    assert_equal "<form action=\"/users\" method=\"post\"></form>", form
+    assert_equal load_fixture("form_with_action.html"), result
+  end
+
+  def test_form_fields_default
+    result = HexletCode.form_for @user do |f|
+      f.input :name
+      f.input :job, as: :text
+    end
+
+    assert_equal load_fixture("form_with_defaults.html"), result
+  end
+
+  def test_form_with_fields_attributes
+    result = HexletCode.form_for @user do |f|
+      f.input :name, class: "user-input"
+      f.input :job
+    end
+
+    assert_equal load_fixture("form_with_attrs.html"), result
+  end
+
+  def test_form_reassign_attributes
+    result = HexletCode.form_for @user do |f|
+      f.input :job, as: :text, rows: 50, cols: 50
+    end
+
+    assert_equal load_fixture("form_with_reassign_attrs.html"), result
+  end
+
+  def test_form_with_missing_method
+    assert_raises NoMethodError do
+      HexletCode.form_for @user, url: "/users" do |f|
+        f.input :name
+        f.input :job, as: :text
+        f.input :age
+      end
+    end
   end
 end

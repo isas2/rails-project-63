@@ -4,7 +4,7 @@
 
 # HexletCode
 
-TODO: Delete this and the text below, and describe your gem
+Генератор HTML-форм.
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/hexlet_code`. To experiment with that code, run `bin/console` for an interactive prompt.
 
@@ -22,7 +22,24 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-TODO: Write usage instructions here
+Генерация полей на основе данных переданного объекта:
+```
+User = Struct.new(:name, :job, :gender, keyword_init: true)
+user = User.new name: 'rob', job: 'hexlet', gender: 'm'
+
+HexletCode.form_for user do |f|
+  f.input :name
+  f.input :job, as: :text
+end
+```
+
+Указание дополнительных атрибутов и переопределение значений по умолчанию 
+```
+HexletCode.form_for user, url: '/users' do |f|
+  f.input :name, class: 'user-input'
+  f.input :job, as: :text, rows: 50, cols: 50
+end
+```
 
 ## Development
 
