@@ -31,7 +31,7 @@ module HexletCode
     def to_s
       HexletCode::Tag.build('form', attributes) do
         fields_html = fields.map { |attrs| "  #{field_to_s(attrs)}" }
-        "\n#{fields_html.join("\n")}\n" unless fields_html.empty?    
+        "\n#{fields_html.join("\n")}\n" unless fields_html.empty?
       end
     end
 
