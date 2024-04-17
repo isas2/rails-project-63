@@ -6,34 +6,41 @@ module HexletCode
 
     def initialize(object, attributes = {})
       @object = object
-      @attributes = attributes
       @url = attributes.fetch(:url, "#")
-      @fields = {}
+      @fields = []
     end
 
     def input(name, attributes = {})
-      object.public_send(name)
-      fields[name] = attributes
+      value = object.public_send(name) || ""
+      type = attributes.delete(:as) || "text"
+      fields << { tag: :label, tag_type: :paired, for: name, value: name.capitalize } unless type == :hidden
+      if type == :text
+        attributes.merge!({ cols: 20, rows: 40 }) { |_, item, _| item }
+        fields << { tag: :textarea, tag_type: :paired, name: name, value: value, **attributes }
+      else
+        fields << { tag: :input, name: name, type: type, value: value, **attributes }
+      end
+    end
+
+    def submit(value = "Save")
+      fields << { tag: :input, type: :submit, value: value }
     end
 
     def to_s
       HexletCode::Tag.build("form", { action: url, method: "post" }) do
-        fields_html = fields.map { |name, attrs| field_to_s(name, attrs) }
+        fields_html = fields.map { |attrs| field_to_s(attrs) }
         "\n#{fields_html.map { |t| "  #{t}" }.join("\n")}\n" unless fields_html.empty?
       end
     end
 
     private
 
-    def field_to_s(name, attrs)
-      value = object.public_send(name) || ""
-      case attrs.delete(:as)
-      when :text
-        attrs.merge!({ cols: 20, rows: 40 }) { |_, item, _| item }
-        HexletCode::Tag.build("textarea", { name: name, **attrs }) { value }
+    def field_to_s(attrs)
+      if attrs.delete(:tag_type) == :paired
+        value = attrs.delete(:value)
+        HexletCode::Tag.build(attrs.delete(:tag), attrs) { value }
       else
-        attrs[:value] = value unless value.empty?
-        HexletCode::Tag.build("input", { name: name, type: "text", **attrs })
+        HexletCode::Tag.build(attrs.delete(:tag), attrs)
       end
     end
   end
