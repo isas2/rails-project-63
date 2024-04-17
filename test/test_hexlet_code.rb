@@ -109,4 +109,10 @@ class TestHexletCode < Minitest::Test
 
     assert_equal load_fixture("form_with_submit.html"), result
   end
+
+  def test_form_custom_attributes
+    result = HexletCode.form_for @user1, url: "/profile", method: :get, class: "hexlet-form", &:submit
+
+    assert_equal load_fixture("form_with_custom_attributes.html"), result
+  end
 end

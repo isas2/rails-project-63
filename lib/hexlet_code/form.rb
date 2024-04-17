@@ -2,11 +2,13 @@
 
 module HexletCode
   class Form
-    attr_reader :object, :url, :fields
+    attr_reader :object, :url, :fields, :attributes
 
     def initialize(object, attributes = {})
       @object = object
-      @url = attributes.fetch(:url, "#")
+      url = attributes.delete(:url) || "#"
+      attributes[:method] ||= :post
+      @attributes = { action: url, **attributes }
       @fields = []
     end
 
@@ -27,7 +29,7 @@ module HexletCode
     end
 
     def to_s
-      HexletCode::Tag.build("form", { action: url, method: "post" }) do
+      HexletCode::Tag.build("form", attributes) do
         fields_html = fields.map { |attrs| field_to_s(attrs) }
         "\n#{fields_html.map { |t| "  #{t}" }.join("\n")}\n" unless fields_html.empty?
       end
