@@ -10,10 +10,6 @@ class TestHexletCode < Minitest::Test
     @user2 = User.new job: 'hexlet'
   end
 
-  def load_fixture(filename)
-    File.read(File.dirname(__FILE__) + "/fixtures/#{filename}")
-  end
-
   def test_that_it_has_a_version_number
     refute_nil ::HexletCode::VERSION
   end

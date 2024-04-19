@@ -1,5 +1,9 @@
 AllCops:
-  TargetRubyVersion: 3.2
+  Exclude:
+    - "**/vendor/**/*"
+    - "**/*.gemspec"
+    - "spec/**"
+  TargetRubyVersion: 3.2.2
   NewCops: enable
 
 Style/HashSyntax:
