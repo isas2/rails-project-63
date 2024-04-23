@@ -32,7 +32,7 @@ module HexletCode
           "\n    #{fields_html.join("\n    ")}\n  " unless fields_html.empty?
         end
         body = @fields.is_a?(Array) ? get_fields_html : @body
-        Tag.build(@tag, attributes.except(:label, :as, :url), &body)
+        HexletCode::Tags::Tag.build(@tag, attributes.except(:label, :as, :url), &body)
       end
 
       protected

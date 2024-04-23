@@ -18,7 +18,7 @@ module HexletCode
       def input(name, attributes = {})
         @object.public_send(name)
         klass = if attributes[:as] == :text
-                  Textarea
+                  HexletCode::Tags::Textarea
                 elsif attributes[:values].is_a? Array
                   get_class(attributes, 'Group')
                 else
@@ -30,7 +30,7 @@ module HexletCode
       end
 
       def submit(value = 'Save')
-        @fields << InputButton.new(type: :submit, value:, label: false)
+        @fields << HexletCode::Tags::InputButton.new(type: :submit, value:, label: false)
       end
     end
   end

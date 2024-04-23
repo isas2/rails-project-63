@@ -21,7 +21,7 @@ module HexletCode
   autoload(:FormRender, "#{__dir__}/hexlet_code/form_render")
 
   def self.form_for(object, attributes = {}, &)
-    form = Tags::Form.new(object, attributes, &)
+    form = HexletCode::Tags::Form.new(object, attributes, &)
     FormRender.render(form)
   end
 end
