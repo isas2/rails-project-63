@@ -3,7 +3,7 @@
 require 'test_helper'
 
 class TestHexletCode < Minitest::Test
-  User = Struct.new(:name, :job, :gender, keyword_init: true)
+  User = Struct.new(:name, :job, :gender, :active, :status, keyword_init: true)
 
   def setup
     @user1 = User.new name: 'rob', job: 'hexlet', gender: 'm'
@@ -15,25 +15,25 @@ class TestHexletCode < Minitest::Test
   end
 
   def test_return_unpaired_tag
-    tag = HexletCode::Tag.build('br')
+    tag = HexletCode::Tags::Tag.build('br')
 
     assert_equal '<br>', tag
 
-    tag = HexletCode::Tag.build('img', src: 'path/to/image')
+    tag = HexletCode::Tags::Tag.build('img', src: 'path/to/image')
 
     assert_equal load_fixture('tag_img.html'), tag
 
-    tag = HexletCode::Tag.build('input', type: 'submit', value: 'Save')
+    tag = HexletCode::Tags::Tag.build('input', type: 'submit', value: 'Save')
 
     assert_equal load_fixture('tag_input.html'), tag
   end
 
   def test_return_paired_tag
-    tag = HexletCode::Tag.build('label', for: 'email') { 'Email' }
+    tag = HexletCode::Tags::Tag.build('label', for: 'email') { 'Email' }
 
     assert_equal load_fixture('tag_label.html'), tag
 
-    tag = HexletCode::Tag.build('div') { '' }
+    tag = HexletCode::Tags::Tag.build('div') { '' }
 
     assert_equal '<div></div>', tag
   end
@@ -110,5 +110,27 @@ class TestHexletCode < Minitest::Test
     result = HexletCode.form_for @user1, url: '/profile', method: :get, class: 'hexlet-form', &:submit
 
     assert_equal load_fixture('form_with_custom_attributes.html'), result
+  end
+
+  def test_form_with_object_change
+    user = User.new name: 'bill'
+    form = HexletCode::Tags::Form.new(user, {}) { |f| f.input :name }
+    user.name = 'tom'
+    result = HexletCode::FormRender.render(form)
+
+    assert_equal load_fixture('form_with_object_change.html'), result
+  end
+
+  def test_form_with_complex_fields
+    user = User.new active: true, status: 'error'
+    result = HexletCode.form_for user, url: '/users' do |f|
+      f.input :gender, as: :hidden
+      f.input :active, as: :checkbox
+      f.input :status, as: :checkbox, values: %w[error wait ok]
+      f.input :status, as: :radio, values: %w[error wait ok]
+      f.input :status, as: :select, values: %w[error wait ok]
+    end
+
+    assert_equal load_fixture('form_with_complex_fields.html'), result
   end
 end

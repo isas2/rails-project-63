@@ -1,0 +1,23 @@
+<form action="/users" method="post">
+  <input name="gender" type="hidden" value="">
+  <label for="active">Active</label>
+  <input name="active" type="checkbox" checked>
+  <label for="status">Status</label>
+  <fieldset name="status">
+    <input name="status" value="error" type="checkbox" checked>
+    <input name="status" value="wait" type="checkbox">
+    <input name="status" value="ok" type="checkbox">
+  </fieldset>
+  <label for="status">Status</label>
+  <fieldset name="status">
+    <input name="status" value="error" type="radio" checked>
+    <input name="status" value="wait" type="radio">
+    <input name="status" value="ok" type="radio">
+  </fieldset>
+  <label for="status">Status</label>
+  <select name="status">
+    <option value="error" checked>error</option>
+    <option value="wait">wait</option>
+    <option value="ok">ok</option>
+  </select>
+</form>

@@ -1,28 +1,45 @@
 # frozen_string_literal: true
 
 module HexletCode
-  class Tag
-    @unpaired = %i[area base basefont bgsound br col command embed hr img input keygen link meta param source track wbr]
+  module Tags
+    class Tag
+      UNPAIRED = %i[area base basefont bgsound br col command embed hr img input keygen
+                    link meta param source track wbr].freeze
 
-    def self.build(tag_name, attributes = {}, &block)
-      label = get_tag_label(tag_name, attributes)
-      if @unpaired.include?(tag_name.to_sym)
-        "#{label}<#{tag_name}#{join_attributes(attributes.except(:label))}>"
-      else
-        value = block_given? ? block.call : attributes.fetch(:value)
-        "#{label}<#{tag_name}#{join_attributes(attributes.except(:value))}>#{value}</#{tag_name}>"
+      attr_reader :attributes
+
+      def initialize(attributes = {}, &block)
+        @attributes = attributes
+        @body = block
       end
-    end
 
-    def self.join_attributes(attributes)
-      attributes.to_a.map { |k, v| " #{k}=\"#{v}\"" }.join
-    end
+      def self.build(tag_name, attributes = {}, &block)
+        if UNPAIRED.include?(tag_name.to_sym)
+          "<#{tag_name}#{join_attributes(attributes)}>"
+        else
+          body_html = block.call if block_given?
+          "<#{tag_name}#{join_attributes(attributes)}>#{body_html}</#{tag_name}>"
+        end
+      end
 
-    def self.get_tag_label(tag_name, attributes)
-      return unless %i[input textarea].include?(tag_name) && attributes[:label] != false
+      def self.join_attributes(attributes)
+        attributes.to_a.map { |k, v| k == :checked ? " #{k}" : " #{k}=\"#{v}\"" }.join
+      end
 
-      name = attributes[:name]
-      "#{build(:label, { for: name, value: name.capitalize })}\n  "
+      def render
+        get_fields_html = proc do
+          fields_html = @fields.map(&:render)
+          "\n    #{fields_html.join("\n    ")}\n  " unless fields_html.empty?
+        end
+        body = @fields.is_a?(Array) ? get_fields_html : @body
+        Tag.build(@tag, attributes.except(:label, :as, :url), &body)
+      end
+
+      protected
+
+      def get_class(attributes, prefix = 'Input')
+        HexletCode::Tags.const_get "#{prefix}#{attributes.fetch(:as, :text).capitalize}"
+      end
     end
   end
 end
