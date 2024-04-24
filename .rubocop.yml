@@ -5,6 +5,7 @@ AllCops:
     - "spec/**"
   TargetRubyVersion: 3.2.2
   NewCops: enable
+  SuggestExtensions: false
 
 Style/HashSyntax:
   EnforcedShorthandSyntax: always
