@@ -11,4 +11,7 @@ lint-fix:
 test:
 	rake test
 
+test-rspec:
+	bundle exec rspec
+
 .PHONY: test
