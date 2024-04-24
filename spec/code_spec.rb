@@ -4,7 +4,7 @@ require 'spec_helper'
 
 User = Struct.new(:name, :job, keyword_init: true)
 
-RSpec.describe HexletCode do
+RSpec.describe HexletCode do # rubocop:disable Metrics/BlockLength
   it 'new' do
     user = User.new name: 'rob'
 
@@ -15,7 +15,7 @@ RSpec.describe HexletCode do
     end
 
     expected_matcher = have_tag('form') do
-      with_tag 'label', for: 'name', text: "Name"
+      with_tag 'label', for: 'name', text: 'Name'
       with_tag 'input', with: { value: user.name, name: 'name', type: 'text', class: 'user-input' }
       with_tag 'label', for: 'job', text: 'Job'
       with_tag 'input', with: { type: 'text', name: 'job' }
@@ -35,7 +35,7 @@ RSpec.describe HexletCode do
     end
 
     expected_matcher = have_tag('form') do
-      with_tag 'label', for: 'name', text: "Name"
+      with_tag 'label', for: 'name', text: 'Name'
       with_tag 'input', with: { name: 'name', type: 'text' }
       with_tag 'label', for: 'job', text: 'Job'
       with_tag 'textarea', name: 'job', rows: 50, cols: 50, text: user.job
@@ -48,9 +48,7 @@ RSpec.describe HexletCode do
   it 'form options' do
     user = User.new name: 'rob'
 
-    actual = HexletCode.form_for user, url: '/profile', method: :get, class: 'hexlet-form' do |f|
-      f.submit
-    end
+    actual = HexletCode.form_for user, url: '/profile', method: :get, class: 'hexlet-form', &:submit
 
     expected_matcher = have_tag('form') do
       with_tag 'form', with: { action: '/profile', method: 'get', class: 'hexlet-form' }
