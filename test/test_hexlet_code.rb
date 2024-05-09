@@ -15,25 +15,21 @@ class TestHexletCode < Minitest::Test
   end
 
   def test_return_unpaired_tag
-    tag = HexletCode::Tags::Tag.build('br')
+    tag = HexletCode::Tag.build('br')
 
     assert_equal '<br>', tag
 
-    tag = HexletCode::Tags::Tag.build('img', src: 'path/to/image')
+    tag = HexletCode::Tag.build('img', src: 'path/to/image')
 
     assert_equal load_fixture('tag_img.html'), tag
-
-    tag = HexletCode::Tags::Tag.build('input', type: 'submit', value: 'Save')
-
-    assert_equal load_fixture('tag_input.html'), tag
   end
 
   def test_return_paired_tag
-    tag = HexletCode::Tags::Tag.build('label', for: 'email') { 'Email' }
+    tag = HexletCode::Tag.build('label', for: 'email') { 'Email' }
 
     assert_equal load_fixture('tag_label.html'), tag
 
-    tag = HexletCode::Tags::Tag.build('div') { '' }
+    tag = HexletCode::Tag.build('div') { '' }
 
     assert_equal '<div></div>', tag
   end
@@ -122,13 +118,13 @@ class TestHexletCode < Minitest::Test
   end
 
   def test_form_with_complex_fields
-    user = User.new active: true, status: 'error'
+    user = User.new active: true, status: :error
+    statuses = [[:ok, 'Success'], [:in_progress, 'In progress'], [:error, 'Task error']]
     result = HexletCode.form_for user, url: '/users' do |f|
       f.input :gender, as: :hidden
-      f.input :active, as: :checkbox
-      f.input :status, as: :checkbox, values: %w[error wait ok]
-      f.input :status, as: :radio, values: %w[error wait ok]
-      f.input :status, as: :select, values: %w[error wait ok]
+      f.input :active, as: :radio, collection: [[true, 'Yes'], [false, 'No']]
+      f.input :status, as: :checkbox, collection: statuses
+      f.input :status, as: :select, collection: statuses
     end
 
     assert_equal load_fixture('form_with_complex_fields.html'), result

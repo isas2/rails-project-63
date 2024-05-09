@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'bundler'
+require 'hexlet_code'
 
 Bundler.require
 

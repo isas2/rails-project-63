@@ -2,12 +2,10 @@
 
 module HexletCode
   module Tags
-    class Label < Tag
-      def initialize(name)
+    class Label < BaseTag
+      def initialize(attributes = {})
         super
         @tag = :label
-        @attributes = { for: name }
-        @body = proc { name.capitalize }
       end
     end
   end

@@ -17,6 +17,7 @@ make install
 
 ```sh
 make test
+make test-rspec
 ```
 
 ## Запуск проверки синтаксиса
@@ -30,10 +31,10 @@ make lint-fix
 
 Генерация полей на основе данных переданного объекта:
 ```ruby
-User = Struct.new(:name, :job, :gender, keyword_init: true)
+User = Struct.new(:name, :job, :gender, :active, :status, keyword_init: true)
 user = User.new name: 'rob', job: 'hexlet', gender: 'm'
 
-HexletCode.form_for user do |f|
+form = HexletCode.form_for user do |f|
   f.input :name
   f.input :job, as: :text
 end
@@ -41,10 +42,21 @@ end
 
 Указание дополнительных атрибутов и переопределение значений по умолчанию 
 ```ruby
-HexletCode.form_for user, url: '/users' do |f|
+form = HexletCode.form_for user, url: '/users' do |f|
   f.input :name, class: 'user-input'
   f.input :job, as: :text, rows: 50, cols: 50
   f.submit 'Wow'
+end
+```
+
+Использование тегов с нескольми доступными значениями
+```ruby
+user = User.new active: true, status: :error
+statuses = [[:ok, 'Success'], [:in_progress, 'In progress'], [:error, 'Task error']]
+form = HexletCode.form_for user, url: '/users' do |f|
+  f.input :gender, as: :hidden
+  f.input :active, as: :radio, collection: [[true, 'Yes'], [false, 'No']]
+  f.input :status, as: :select, collection: statuses
 end
 ```
 

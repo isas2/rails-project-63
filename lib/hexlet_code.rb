@@ -1,26 +1,24 @@
 # frozen_string_literal: true
 
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
+
 require_relative 'hexlet_code/version'
-require_relative 'hexlet_code/tag'
-require_relative 'hexlet_code/label'
-require_relative 'hexlet_code/form'
-require_relative 'hexlet_code/input'
-require_relative 'hexlet_code/input_text'
-require_relative 'hexlet_code/input_button'
-require_relative 'hexlet_code/input_hidden'
-require_relative 'hexlet_code/input_checkbox'
-require_relative 'hexlet_code/input_radio'
-require_relative 'hexlet_code/option'
-require_relative 'hexlet_code/group'
-require_relative 'hexlet_code/group_select'
-require_relative 'hexlet_code/group_radio'
-require_relative 'hexlet_code/group_checkbox'
-require_relative 'hexlet_code/textarea'
-require_relative 'hexlet_code/form_render'
 
 module HexletCode
+  autoload(:Tags, 'hexlet_code/tags')
+  autoload(:Tag, 'hexlet_code/renders/tag')
+  autoload(:FormRender, 'hexlet_code/renders/form_render')
+
   def self.form_for(object, attributes = {}, &)
-    form = HexletCode::Tags::Form.new(object, attributes, &)
+    form = Tags::Form.new(object, attributes, &)
     FormRender.render(form)
   end
 end
+
+# User = Struct.new(:name, :job, :gender, :active, :status, keyword_init: true)
+# user = User.new name: 'rob', job: 'hexlet', gender: 'm'
+# form = HexletCode.form_for user do |f|
+#   f.input :name
+#   f.input :job, as: :text
+# end
+# puts form

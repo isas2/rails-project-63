@@ -1,23 +1,25 @@
 <form action="/users" method="post">
   <input name="gender" type="hidden" value="">
   <label for="active">Active</label>
-  <input name="active" type="checkbox" checked>
-  <label for="status">Status</label>
-  <fieldset name="status">
-    <input name="status" value="error" type="checkbox" checked>
-    <input name="status" value="wait" type="checkbox">
-    <input name="status" value="ok" type="checkbox">
+  <fieldset name="active">
+    <input name="active" value="true" type="radio" id="var_active_true" checked>
+    <label for="var_active_true">Yes</label>
+    <input name="active" value="false" type="radio" id="var_active_false">
+    <label for="var_active_false">No</label>
   </fieldset>
   <label for="status">Status</label>
   <fieldset name="status">
-    <input name="status" value="error" type="radio" checked>
-    <input name="status" value="wait" type="radio">
-    <input name="status" value="ok" type="radio">
+    <input name="status" value="ok" type="checkbox" id="var_status_ok">
+    <label for="var_status_ok">Success</label>
+    <input name="status" value="in_progress" type="checkbox" id="var_status_in_progress">
+    <label for="var_status_in_progress">In progress</label>
+    <input name="status" value="error" type="checkbox" id="var_status_error" checked>
+    <label for="var_status_error">Task error</label>
   </fieldset>
   <label for="status">Status</label>
   <select name="status">
-    <option value="error" checked>error</option>
-    <option value="wait">wait</option>
-    <option value="ok">ok</option>
+    <option value="ok">Success</option>
+    <option value="in_progress">In progress</option>
+    <option value="error" selected>Task error</option>
   </select>
 </form>
